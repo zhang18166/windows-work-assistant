@@ -20,7 +20,7 @@ from app_logging import base_logger, recent_log_records
 import config_store
 from phase2_folder_monitor import FolderMonitor
 
-VERSION = "1.3.4"
+VERSION = "1.3.5"
 _output_lock = threading.Lock()
 
 
@@ -43,6 +43,7 @@ def input_lines():
 
     Windows spawn 子进程继承标准句柄，父进程正阻塞读同一管道时，子进程的
     标准输入初始化可能被卡住。只在 PeekNamedPipe 确认有数据后读取，避开此竞争。
+    解码接受流首 BOM：.NET Framework 在 UTF-8 系统上可能自动输出此标记。
     """
     if sys.stdin.isatty():
         yield from sys.stdin
@@ -54,7 +55,7 @@ def input_lines():
             _, available, _ = win32pipe.PeekNamedPipe(handle, 0)
         except pywintypes.error as exc:
             if exc.winerror in (109, 232):
-                if pending: yield pending.decode("utf-8")
+                if pending: yield pending.decode("utf-8-sig")
                 return
             raise
         if not available:
@@ -64,7 +65,7 @@ def input_lines():
         while b"\n" in pending:
             line, pending = pending.split(b"\n", 1)
             if len(line) > 65536: raise ValueError("请求过长")
-            yield line.decode("utf-8")
+            yield line.decode("utf-8-sig")
         if len(pending) > 65536:
             raise ValueError("请求过长")
 

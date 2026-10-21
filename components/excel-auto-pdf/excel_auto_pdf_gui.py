@@ -30,7 +30,7 @@ from ui_layout import ResponsiveLayout
 
 
 APP_NAME = "Excel自动转PDF"
-APP_VERSION = "1.3.4"
+APP_VERSION = "1.3.5"
 CONFIG_FILENAME = "config.json"
 LOG_FILENAME = "excel_auto_pdf.log"
 MAX_LOG_LINES = 2_000

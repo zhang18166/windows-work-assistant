@@ -2,7 +2,7 @@
 
 Watch a local folder and export changed Excel workbooks to PDF using desktop Microsoft Excel.
 
-只需要保存 Excel 后自动生成 PDF，使用这个独立版即可。当前版本 **1.3.4**。
+只需要保存 Excel 后自动生成 PDF，使用这个独立版即可。当前版本 **1.3.5**。
 
 [下载独立版](https://github.com/zhang18166/excel-auto-pdf/releases) · [自动输入法助手](https://github.com/zhang18166/auto-ime-switcher) · [两者整合版](https://github.com/zhang18166/windows-work-assistant)
 
@@ -21,7 +21,7 @@ Watch a local folder and export changed Excel workbooks to PDF using desktop Mic
 
 需要 Windows 10/11 x64 和本机安装的 **Microsoft Excel 桌面版**。只装 WPS、浏览器版 Office 或 PDF 阅读器不能替代 Excel COM。
 
-下载 Releases ZIP 解压运行 `Excel自动转PDFv1.3.4.exe`，点击“设置…”选择文件夹，配置子文件夹及超时，再开始监控。
+下载 Releases ZIP 解压运行 `Excel自动转PDFv1.3.5.exe`，点击“设置…”选择文件夹，配置子文件夹及超时，再开始监控。
 关窗口/最小化会收进托盘，退出使用“退出程序”。勾选开机启动后用 `--silent` 读取上次目录并监控。
 
 配置：`%APPDATA%\Excel自动转PDF\config.json`；备份：`.bak`；损坏副本：`.bad-*`。
@@ -38,7 +38,7 @@ python -m venv .venv
 .venv\Scripts\python.exe tools/build_release.py
 ```
 
-输出：`dist/v1.3.4/Excel自动转PDFv1.3.4.exe`。
+输出：`dist/v1.3.5/Excel自动转PDFv1.3.5.exe`。
 
 ```powershell
 .venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py"

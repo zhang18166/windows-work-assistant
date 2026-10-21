@@ -47,7 +47,12 @@ def main():
             except queue.Empty:
                 if process.poll() is not None:raise RuntimeError('服务退出，请查看 '+str(run/'stderr.log'))
         raise TimeoutError(str(all_messages[-5:]))
+    first_request=True
     def send(command,**values):
+        nonlocal first_request
+        if first_request:
+            process.stdin.write('\ufeff')
+            first_request=False
         process.stdin.write(json.dumps(dict(command=command,**values),ensure_ascii=False)+'\n');process.stdin.flush()
     try:
         wait_for(lambda m:m['event']=='ready')

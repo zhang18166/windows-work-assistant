@@ -20,3 +20,6 @@ settings.json*
 *.dll
 Thumbs.db
 .DS_Store
+
+/release-assets/
+/release-input/

@@ -2,7 +2,7 @@
 
 One Windows app for foreground-aware IME switching and automatic Excel-to-PDF export.
 
-**一个主界面、一个托盘、一个开机启动项**，可独立开启输入法模块或 Excel 转 PDF。当前版本 **1.0.0**。
+**一个主界面、一个托盘、一个开机启动项**，可独立开启输入法模块或 Excel 转 PDF。当前版本 **1.0.1**。
 
 | 需要的功能 | 选择 |
 |---|---|
@@ -57,7 +57,7 @@ powershell -ExecutionPolicy Bypass -File tools/build.ps1 -Python .venv\Scripts\p
 powershell -ExecutionPolicy Bypass -File tools/test.ps1
 ```
 
-输出：`dist/v1.0.0/WindowsWorkAssistant.exe`，已经包含 PDF 引擎。
+输出：`dist/v1.0.1/WindowsWorkAssistant.exe`，已经包含 PDF 引擎。
 `tools/test.ps1` 隔离配置目录，检查模块开关、配置恢复、内嵌设置、小窗口日志、中文管道和退出清理；不模拟真实按键。
 完整验证还应分别运行组件回归及需要本机 Excel 的 `tests/service_integration.py --engine <引擎路径>`。
 
