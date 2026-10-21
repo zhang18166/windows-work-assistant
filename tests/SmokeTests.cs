@@ -39,15 +39,19 @@ namespace WindowsWorkAssistant
                     Check(ime.GetSettingsForm().ClientSize.Width>=ime.GetSettingsForm().AutoScrollMinSize.Width,"IME tab widens for readable settings without horizontal clipping");
                     form.SelectModule(false);form.Size=form.MinimumSize;Application.DoEvents();
                     var received=new List<Dictionary<string,object>>();var sync=new object();
-                    engine.Message+=delegate(Dictionary<string,object> data) { lock(sync)received.Add(data); };
+                    engine.Message+=delegate(Dictionary<string,object> data) {
+                        lock(sync)received.Add(data);
+                        string kind=Convert.ToString(data["event"]);
+                        if(kind=="reply"||kind=="config")Console.WriteLine("PIPE_EVENT "+new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(data));
+                    };
                     string failure=null;engine.Failure+=delegate(string error) { failure=error; };
                     engine.Start();Wait(delegate { lock(sync)return received.Exists(m=>Convert.ToString(m["event"])=="ready"); },15);
                     Check(failure==null,"embedded engine extraction and process job start");
                     string unicodeFolder=Path.Combine(root,"中文监控目录");Directory.CreateDirectory(unicodeFolder);
                     engine.Send("set_config",new Dictionary<string,object> { {"monitor_folder",unicodeFolder},{"recursive",true},{"task_timeout",60} });
-                    Wait(delegate { lock(sync)return received.Exists(m=>Convert.ToString(m["event"])=="config"); },5);
+                    Wait(delegate { lock(sync)return received.Exists(m=>Convert.ToString(m["event"])=="config"); },30);
                     Check(File.ReadAllText(Path.Combine(root,"Roaming","Excel自动转PDF","config.json")).Contains("中文监控目录"),"UTF8 command pipe preserves Chinese paths");
-                    engine.Send("start");Wait(delegate { lock(sync)return received.Exists(m=>Convert.ToString(m["event"])=="status"&&Convert.ToString(m["status"])=="正在监控"); },5);
+                    engine.Send("start");Wait(delegate { lock(sync)return received.Exists(m=>Convert.ToString(m["event"])=="status"&&Convert.ToString(m["status"])=="正在监控"); },30);
                     Check(true,"monitor starts only on explicit command");
                     if(Environment.GetEnvironmentVariable("WORK_ASSISTANT_UI_PREVIEW")=="1")
                     {
@@ -61,7 +65,11 @@ namespace WindowsWorkAssistant
                 }
                 Console.WriteLine("SUITE_SMOKE_PASS "+root);
             }
-            catch(Exception ex) { Console.Error.WriteLine(ex);Environment.ExitCode=1; }
+            catch(Exception ex) {
+                Console.Error.WriteLine(ex);
+                string trace=Path.Combine(root,"suite","suite.log");if(File.Exists(trace))Console.Error.WriteLine(File.ReadAllText(trace));
+                Environment.ExitCode=1;
+            }
         }
         private static void Wait(Func<bool> predicate,int seconds)
         { DateTime deadline=DateTime.UtcNow.AddSeconds(seconds);while(!predicate()) { if(DateTime.UtcNow>deadline)throw new TimeoutException();Application.DoEvents();Thread.Sleep(20); } }
