@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <!--
+    Old-style csproj：不走 SDK style / NuGet restore 路径。
+
+    引用程序集目录（NRefPath）不再写死某台机器的用户路径，按下面的顺序自动找：
+      1. 命令行显式传入的 -p:NRefPath=...   （优先级最高，便于 CI / 临时覆盖）
+      2. 机器上装了 .NET Framework 4.8 Developer Pack 时的 Reference Assemblies 目录
+      3. 系统运行时目录 Framework64\v4.0.30319（没装 Developer Pack 也能用，实测可编译）
+      4. 最后才退回原来的 NuGet 缓存路径
+  -->
+  <PropertyGroup>
+    <NRefPath Condition="'$(NRefPath)' == '' AND Exists('$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\mscorlib.dll')">$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\</NRefPath>
+    <NRefPath Condition="'$(NRefPath)' == '' AND Exists('$(WINDIR)\Microsoft.NET\Framework64\v4.0.30319\mscorlib.dll')">$(WINDIR)\Microsoft.NET\Framework64\v4.0.30319\</NRefPath>
+    <NRefPath Condition="'$(NRefPath)' == ''">$(USERPROFILE)\.nuget\packages\microsoft.netframework.referenceassemblies.net48\1.0.3\build\.NETFramework\v4.8\</NRefPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RootNamespace>AutoImeSwitcher</RootNamespace>
+    <AssemblyName>AutoImeSwitcher</AssemblyName>
+    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+    <Platform Condition="'$(Platform)'==''">AnyCPU</Platform>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <FrameworkPathOverride>$(NRefPath)</FrameworkPathOverride>
+    <OutputPath>bin\Release\</OutputPath>
+    <AssemblyTitle>自动输入法助手</AssemblyTitle>
+    <Product>自动输入法助手</Product>
+    <Company>AutoImeSwitcher</Company>
+    <Version>1.0.13.0</Version>
+    <FileVersion>1.0.13.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="mscorlib"><HintPath>$(NRefPath)mscorlib.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System"><HintPath>$(NRefPath)System.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Core"><HintPath>$(NRefPath)System.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Drawing"><HintPath>$(NRefPath)System.Drawing.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Windows.Forms"><HintPath>$(NRefPath)System.Windows.Forms.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Configuration"><HintPath>$(NRefPath)System.Configuration.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Xml"><HintPath>$(NRefPath)System.Xml.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Runtime.Serialization"><HintPath>$(NRefPath)System.Runtime.Serialization.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Xml.Linq"><HintPath>$(NRefPath)System.Xml.Linq.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Microsoft.CSharp"><HintPath>$(NRefPath)Microsoft.CSharp.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="AppHostOptions.cs" />
+    <Compile Include="ActivityStatus.cs" />
+    <Compile Include="ActivityCardPainter.cs" />
+    <Compile Include="AppContext.cs" />
+    <Compile Include="AutostartHelper.cs" />
+    <Compile Include="FlatUi.cs" />
+    <Compile Include="FloatingIndicator.cs" />
+    <Compile Include="ForegroundWatcher.cs" />
+    <Compile Include="ImeController.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="MainForm.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="NativeImePlatform.cs" />
+    <Compile Include="OperationEpoch.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuleEditForm.cs" />
+    <Compile Include="WindowEnumerator.cs" />
+    <Compile Include="WindowPickerForm.cs" />
+    <Compile Include="WorkerQueue.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
+
+
+

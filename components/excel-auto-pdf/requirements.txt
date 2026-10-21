@@ -1,0 +1,6 @@
+pywin32==312
+watchdog==6.0.0
+pyinstaller==6.21.0
+pystray==0.19.5
+pillow==12.3.0
+pypdf==6.21.1

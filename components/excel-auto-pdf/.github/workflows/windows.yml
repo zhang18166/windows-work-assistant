@@ -1,0 +1,24 @@
+name: Windows build and tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - run: python -m pip install -r requirements.txt
+      - name: Regression checks without Office
+        run: python -m unittest discover -s tests -p "test_*.py"
+      - name: UI layout and log visibility
+        run: python tests/test_ui.py
+      - name: Build standalone EXE
+        run: python tools/build_release.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: excel-auto-pdf-windows
+          path: dist/v1.3.4/*.exe

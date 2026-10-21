@@ -1,0 +1,25 @@
+# Build outputs and local data
+.git/
+.venv/
+__pycache__/
+*.pyc
+**/bin/
+**/obj/
+**/build/
+**/dist/
+**/runs/
+**/previews*/
+*.spec
+*.log
+*.log.*
+config.json*
+settings.json*
+.env*
+*.zip
+*.exe
+*.dll
+Thumbs.db
+.DS_Store
+
+/tests/*.txt
+/tests/*.json

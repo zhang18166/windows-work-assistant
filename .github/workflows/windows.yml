@@ -1,0 +1,26 @@
+name: Windows build and integration smoke
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - run: python -m pip install -r components/excel-auto-pdf/requirements.txt
+      - name: Verify pinned component snapshots
+        run: python tools/verify_components.py
+      - name: Build single app with embedded engine
+        shell: powershell
+        run: .\tools\build.ps1
+      - name: Isolated host, UTF8 pipe and graceful shutdown checks
+        shell: powershell
+        run: .\tools\test.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-work-assistant
+          path: dist/v1.0.0/WindowsWorkAssistant.exe

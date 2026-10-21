@@ -1,0 +1,16 @@
+name: Windows build and tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run 48 regression checks
+        shell: powershell
+        run: .\tools\build-and-test.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: auto-ime-switcher-windows
+          path: src/bin/Release/AutoImeSwitcher.exe
